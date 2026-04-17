@@ -34,7 +34,17 @@ export function getFirebaseAuth() {
 
 export async function signInWithGoogle() {
   const auth = getFirebaseAuth();
-  return signInWithPopup(auth, googleProvider);
+  googleProvider.setCustomParameters({
+    prompt: 'select_account'
+  });
+  try {
+    return await signInWithPopup(auth, googleProvider);
+  } catch (error) {
+    if (error.code === 'auth/popup-closed-by-user') {
+      return null;
+    }
+    throw error;
+  }
 }
 
 export function logout() {

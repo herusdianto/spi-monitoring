@@ -7,7 +7,7 @@ import {
   updateProfile
 } from 'firebase/auth';
 import { getFirebaseAuth, observeAuth, signInWithGoogle as firebaseGoogleSignIn } from '@/config/firebase';
-import api from '@/services/api';
+import api, { setToken as setAuthToken } from '@/services/api';
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref(null);
@@ -34,7 +34,7 @@ export const useAuthStore = defineStore('auth', () => {
           try {
             const token = await firebaseUser.getIdToken();
             idToken.value = token;
-            api.setToken(token);
+            setAuthToken(token);
           } catch (err) {
             console.error('Failed to get ID token:', err);
           }
@@ -68,7 +68,7 @@ export const useAuthStore = defineStore('auth', () => {
       
       const token = await userCredential.user.getIdToken();
       idToken.value = token;
-      api.setToken(token);
+      setAuthToken(token);
       
       return true;
     } catch (err) {
@@ -85,24 +85,26 @@ export const useAuthStore = defineStore('auth', () => {
     
     try {
       const userCredential = await firebaseGoogleSignIn();
+      const firebaseUser = userCredential.user;
       
       user.value = {
-        uid: userCredential.user.uid,
-        email: userCredential.user.email,
-        displayName: userCredential.user.displayName,
-        photoURL: userCredential.user.photoURL
+        uid: firebaseUser.uid,
+        email: firebaseUser.email,
+        displayName: firebaseUser.displayName,
+        photoURL: firebaseUser.photoURL
       };
       
-      const token = await userCredential.user.getIdToken();
+      const token = await firebaseUser.getIdToken();
       idToken.value = token;
-      api.setToken(token);
+      setAuthToken(token);
       
+      loading.value = false;
       return true;
     } catch (err) {
+      console.error('Google login error:', err);
       error.value = getErrorMessage(err.code);
-      return false;
-    } finally {
       loading.value = false;
+      return false;
     }
   }
 
@@ -127,7 +129,7 @@ export const useAuthStore = defineStore('auth', () => {
       
       const token = await userCredential.user.getIdToken();
       idToken.value = token;
-      api.setToken(token);
+      setAuthToken(token);
       
       return true;
     } catch (err) {
@@ -148,7 +150,7 @@ export const useAuthStore = defineStore('auth', () => {
       
       user.value = null;
       idToken.value = null;
-      api.setToken(null);
+      setAuthToken(null);
       
       return true;
     } catch (err) {
