@@ -51,7 +51,9 @@ module.exports = {
         use: [
           isProduction ? MiniCssExtractPlugin.loader : 'style-loader',
           'css-loader',
-          'sass-loader'
+          {
+            loader: 'sass-loader'
+          }
         ]
       },
       {
@@ -69,7 +71,12 @@ module.exports = {
     new webpack.DefinePlugin({
       __VUE_OPTIONS_API__: true,
       __VUE_PROD_DEVTOOLS__: false,
-      __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false
+      __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
+      process: JSON.stringify({
+        env: {
+          NODE_ENV: mode
+        }
+      })
     }),
     ...(isProduction ? [new MiniCssExtractPlugin({
       filename: '[name].[contenthash].css'

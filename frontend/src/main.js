@@ -13,6 +13,6 @@ app.use(pinia);
 app.use(router);
 app.use(vuetify);
 
-firebase.init();
+firebase.initFirebase();
 
 app.mount('#app');
