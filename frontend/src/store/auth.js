@@ -6,7 +6,7 @@ import {
   signOut,
   updateProfile
 } from 'firebase/auth';
-import { getFirebaseAuth, observeAuth } from '@/config/firebase';
+import { getFirebaseAuth, observeAuth, signInWithGoogle as firebaseGoogleSignIn } from '@/config/firebase';
 import api from '@/services/api';
 
 export const useAuthStore = defineStore('auth', () => {
@@ -58,6 +58,33 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const auth = getFirebaseAuth();
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      
+      user.value = {
+        uid: userCredential.user.uid,
+        email: userCredential.user.email,
+        displayName: userCredential.user.displayName,
+        photoURL: userCredential.user.photoURL
+      };
+      
+      const token = await userCredential.user.getIdToken();
+      idToken.value = token;
+      api.setToken(token);
+      
+      return true;
+    } catch (err) {
+      error.value = getErrorMessage(err.code);
+      return false;
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  async function loginWithGoogle() {
+    error.value = null;
+    loading.value = true;
+    
+    try {
+      const userCredential = await firebaseGoogleSignIn();
       
       user.value = {
         uid: userCredential.user.uid,
@@ -157,6 +184,7 @@ export const useAuthStore = defineStore('auth', () => {
     isAuthenticated,
     initialize,
     login,
+    loginWithGoogle,
     register,
     logout
   };

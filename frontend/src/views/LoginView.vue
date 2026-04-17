@@ -9,8 +9,17 @@
           </v-card-title>
           
           <v-card-subtitle class="text-center mb-4">
-            {{ isLogin ? 'Sign in to your account' : 'Create a new account' }}
+            {{ isLogin ? 'Sign in' : 'Register' }}
           </v-card-subtitle>
+          
+          <v-btn v-if="isLogin" color="white" block class="mb-4" @click="googleLogin" :loading="googleLoading">
+            <v-icon start>mdi-google</v-icon>
+            Continue with Google
+          </v-btn>
+          
+          <v-alert v-if="isLogin" type="info" variant="tonal" class="mb-4 text-caption">
+            Or sign in with email
+          </v-alert>
           
           <v-form ref="form" v-model="valid" @submit.prevent="submit">
             <v-text-field
@@ -109,6 +118,7 @@ const password = ref('');
 const confirmPassword = ref('');
 const displayName = ref('');
 const showPassword = ref(false);
+const googleLoading = ref(false);
 
 const rules = {
   required: v => !!v || 'This field is required',
@@ -130,6 +140,14 @@ async function submit() {
     success = await authStore.register(email.value, password.value, displayName.value);
   }
   
+  if (success) {
+    const redirect = route.query.redirect || '/';
+    router.push(redirect);
+  }
+}
+
+async function googleLogin() {
+  const success = await authStore.loginWithGoogle();
   if (success) {
     const redirect = route.query.redirect || '/';
     router.push(redirect);

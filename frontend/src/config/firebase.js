@@ -1,19 +1,20 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { getAuth, onAuthStateChanged, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || 'YOUR_API_KEY',
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || 'spi-monitoring.firebaseapp.com',
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || 'spi-monitoring',
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || 'spi-monitoring.appspot.com',
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '123456789',
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || '1:123456789:web:abc123'
+  apiKey: process.env.VITE_FIREBASE_API_KEY || 'YOUR_API_KEY',
+  authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN || 'spi-monitoring.firebaseapp.com',
+  projectId: process.env.VITE_FIREBASE_PROJECT_ID || 'spi-monitoring',
+  storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET || 'spi-monitoring.appspot.com',
+  messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '123456789',
+  appId: process.env.VITE_FIREBASE_APP_ID || '1:123456789:web:abc123'
 };
 
 let app;
 let auth;
 let db;
+const googleProvider = new GoogleAuthProvider();
 
 export function initFirebase() {
   if (!app) {
@@ -29,6 +30,16 @@ export function getFirebaseAuth() {
     initFirebase();
   }
   return auth;
+}
+
+export async function signInWithGoogle() {
+  const auth = getFirebaseAuth();
+  return signInWithPopup(auth, googleProvider);
+}
+
+export function logout() {
+  const auth = getFirebaseAuth();
+  return signOut(auth);
 }
 
 export function getFirebaseDb() {
@@ -58,5 +69,7 @@ export default {
   getFirebaseAuth,
   getFirebaseDb,
   getCurrentUser,
-  observeAuth
+  observeAuth,
+  signInWithGoogle,
+  logout
 };

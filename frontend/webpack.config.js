@@ -1,8 +1,20 @@
 const path = require('path');
+const webpack = require('webpack');
+const { DefinePlugin } = webpack;
+const dotenv = require('dotenv').config({ path: path.resolve(__dirname, '.env') });
+
+const envVars = {
+  'process.env.VITE_FIREBASE_API_KEY': JSON.stringify(dotenv.parsed.VITE_FIREBASE_API_KEY),
+  'process.env.VITE_FIREBASE_AUTH_DOMAIN': JSON.stringify(dotenv.parsed.VITE_FIREBASE_AUTH_DOMAIN),
+  'process.env.VITE_FIREBASE_PROJECT_ID': JSON.stringify(dotenv.parsed.VITE_FIREBASE_PROJECT_ID),
+  'process.env.VITE_FIREBASE_STORAGE_BUCKET': JSON.stringify(dotenv.parsed.VITE_FIREBASE_STORAGE_BUCKET),
+  'process.env.VITE_FIREBASE_MESSAGING_SENDER_ID': JSON.stringify(dotenv.parsed.VITE_FIREBASE_MESSAGING_SENDER_ID),
+  'process.env.VITE_FIREBASE_APP_ID': JSON.stringify(dotenv.parsed.VITE_FIREBASE_APP_ID)
+};
+
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { VueLoaderPlugin } = require('vue-loader');
-const webpack = require('webpack');
 
 const mode = process.env.NODE_ENV || 'development';
 const isProduction = mode === 'production';
@@ -68,7 +80,8 @@ module.exports = {
       template: './public/index.html',
       title: 'SPI Monitoring'
     }),
-    new webpack.DefinePlugin({
+    new DefinePlugin({
+      ...envVars,
       __VUE_OPTIONS_API__: true,
       __VUE_PROD_DEVTOOLS__: false,
       __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
