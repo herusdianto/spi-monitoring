@@ -1,0 +1,13 @@
+$font-family-base: 'Roboto', sans-serif;
+
+body {
+  font-family: $font-family-base;
+}
+
+.v-application {
+  background-color: rgb(var(--v-theme-background)) !important;
+}
+
+a {
+  text-decoration: none;
+}
