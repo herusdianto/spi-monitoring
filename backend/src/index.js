@@ -3,11 +3,8 @@ require('dotenv').config();
 const fastify = require('fastify')({ logger: true });
 const cors = require('@fastify/cors');
 const jwt = require('@fastify/jwt');
-const fs = require('fs');
-const path = require('path');
 
 const { initializeFirebase } = require('./config/firebase');
-const authMiddleware = require('./plugins/auth');
 const monitoringRoutes = require('./routes/monitoring');
 const documentRoutes = require('./routes/documents');
 
@@ -23,8 +20,6 @@ async function start() {
     });
 
     initializeFirebase();
-
-    await fastify.register(authMiddleware);
 
     await fastify.register(monitoringRoutes, { prefix: '/api/monitoring' });
     await fastify.register(documentRoutes, { prefix: '/api/documents' });
