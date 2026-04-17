@@ -15,7 +15,7 @@ const vuetify = createVuetify({
     }
   },
   theme: {
-    defaultTheme: 'light',
+    defaultTheme: 'dark',
     themes: {
       light: {
         colors: {
@@ -25,22 +25,18 @@ const vuetify = createVuetify({
           error: '#FF5252',
           info: '#2196F3',
           success: '#4CAF50',
-          warning: '#FFC107',
-          background: '#FAFAFA',
-          surface: '#FFFFFF'
+          warning: '#FFC107'
         }
       },
       dark: {
         colors: {
-          primary: '#2196F3',
+          primary: '#90CAF9',
           secondary: '#424242',
           accent: '#82B1FF',
-          error: '#FF5252',
-          info: '#2196F3',
-          success: '#4CAF50',
-          warning: '#FFC107',
-          background: '#121212',
-          surface: '#1E1E1E'
+          error: '#CF6679',
+          info: '#90CAF9',
+          success: '#81C784',
+          warning: '#FFD54F'
         }
       }
     }

@@ -1,26 +1,22 @@
 <template>
   <div>
     <div class="d-flex align-center mb-4">
-      <h1 class="text-h4 font-weight-bold">Monitoring Data</h1>
+      <h1 class="text-h4 font-weight-bold">Data</h1>
       <v-spacer></v-spacer>
-      <v-btn color="primary" to="/monitoring/new">
-        <v-icon start>mdi-plus</v-icon>
-        New Entry
-      </v-btn>
+      <v-text-field
+        v-model="search"
+        prepend-inner-icon="mdi-magnify"
+        label="Search"
+        single-line
+        hide-details
+        density="compact"
+        class="mr-2"
+        style="max-width: 200px"
+      ></v-text-field>
+      <v-btn color="primary" to="/monitoring/new">New</v-btn>
     </div>
     
     <v-card>
-      <v-card-title>
-        <v-text-field
-          v-model="search"
-          prepend-inner-icon="mdi-magnify"
-          label="Search"
-          single-line
-          hide-details
-          class="mb-2"
-        ></v-text-field>
-      </v-card-title>
-      
       <v-data-table
         :headers="headers"
         :items="items"
@@ -35,36 +31,22 @@
         </template>
         
         <template v-slot:item.category="{ item }">
-          <v-chip :color="getCategoryColor(item.category)" size="small">
-            {{ item.category }}
-          </v-chip>
+          <v-chip :color="getCategoryColor(item.category)" size="small">{{ item.category }}</v-chip>
         </template>
         
         <template v-slot:item.status="{ item }">
-          <v-chip :color="getStatusColor(item.status)" size="small">
-            {{ item.status }}
-          </v-chip>
+          <v-chip :color="getStatusColor(item.status)" size="small">{{ item.status }}</v-chip>
         </template>
         
         <template v-slot:item.priority="{ item }">
-          <v-chip :color="getPriorityColor(item.priority)" size="small">
-            {{ item.priority }}
-          </v-chip>
+          <v-chip :color="getPriorityColor(item.priority)" size="small">{{ item.priority }}</v-chip>
         </template>
         
         <template v-slot:item.actions="{ item }">
-          <v-btn icon size="small" :to="`/monitoring/${item.id}/edit`">
-            <v-icon>mdi-pencil</v-icon>
-          </v-btn>
-          <v-btn icon size="small" color="success" @click="downloadWord(item.id)">
-            <v-icon>mdi-file-word</v-icon>
-          </v-btn>
-          <v-btn icon size="small" color="info" @click="downloadExcel(item.id)">
-            <v-icon>mdi-microsoft-excel</v-icon>
-          </v-btn>
-          <v-btn icon size="small" color="error" @click="confirmDelete(item)">
-            <v-icon>mdi-delete</v-icon>
-          </v-btn>
+          <v-btn icon size="small" :to="`/monitoring/${item.id}/edit`"><v-icon>mdi-pencil</v-icon></v-btn>
+          <v-btn icon size="small" @click="downloadWord(item.id)"><v-icon>mdi-file-word</v-icon></v-btn>
+          <v-btn icon size="small" @click="downloadExcel(item.id)"><v-icon>mdi-file-excel</v-icon></v-btn>
+          <v-btn icon size="small" color="error" @click="confirmDelete(item)"><v-icon>mdi-delete</v-icon></v-btn>
         </template>
       </v-data-table>
     </v-card>
@@ -72,9 +54,7 @@
     <v-dialog v-model="deleteDialog" max-width="400">
       <v-card>
         <v-card-title>Confirm Delete</v-card-title>
-        <v-card-text>
-          Are you sure you want to delete "{{ itemToDelete?.spiName }}"? This action cannot be undone.
-        </v-card-text>
+        <v-card-text>Delete "{{ itemToDelete?.spiName }}"?</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn @click="deleteDialog = false">Cancel</v-btn>
@@ -83,9 +63,7 @@
       </v-card>
     </v-dialog>
     
-    <v-snackbar v-model="snackbar.show" :color="snackbar.color">
-      {{ snackbar.message }}
-    </v-snackbar>
+    <v-snackbar v-model="snackbar.show" :color="snackbar.color">{{ snackbar.message }}</v-snackbar>
   </div>
 </template>
 
